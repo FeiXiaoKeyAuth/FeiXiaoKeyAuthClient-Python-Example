@@ -2,7 +2,7 @@
 **AES 加密 · RSA 签名验证 · HWID 绑定 · 心跳 · 远程变量 · 会话管理**
 
 本项目示例展示了如何使用 Python 构建一个安全、可扩展的软件授权 / 验证客户端。
-整个流程与 C++ 客户端保持一致，包括通信加密、RSA 验签、Token 刷新、Nonce 重放保护、心跳保活等。
+注意Python是解释性语言,防破解和调试上功能并不是很安全,建议使用安全的打包器，比如nuitka
 
 该示例中的逻辑包括：
 
@@ -37,7 +37,7 @@
 |-------|------|
 | `login(license)` | 卡密登录 |
 | `get_var(key)` | 获取远程变量 |
-| `Heartbeat()` | 心跳包 |
+| `Heartbeat()` | 没有此函数,写死在自动心跳线程了 |
 | `start_keep_alive()` | 自动心跳线程 |
 | `stop_keep_alive()` | 停止心跳线程 |
 
@@ -66,14 +66,12 @@
 
 #  ⭐ 鸣谢
 
-OpenSSL
+PyCryptodome
 
-Curl
+requests
 
-nlohmann/json
+uuid/hashlib
 
-VMProtect
-
-skCrypt
+threading
 
 ---
