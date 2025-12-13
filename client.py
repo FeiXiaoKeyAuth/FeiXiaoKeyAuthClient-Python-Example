@@ -164,7 +164,24 @@ class KeyAuthClient:
                     "signature": "",
                 }
 
-                r = requests.post(API_URL + endpoint, json=payload, timeout=30)
+                HEADERS = {
+                "User-Agent": (
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                "AppleWebKit/537.36 (KHTML, like Gecko) "
+                "Chrome/120.0.0.0 Safari/537.36"
+                ),
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+}
+
+
+                r = requests.post(
+                API_URL + endpoint,
+                json=payload,
+                headers=HEADERS,
+                timeout=30
+                )
+
                 res = r.json()
 
                 if "error" in res:
@@ -278,12 +295,13 @@ class KeyAuthClient:
                     break
 
             next_token = res.get("next_token")
-            if next_token == self.token:
-                print("   [严重安全警告] 检测到重放攻击！Token 未刷新！")
-                break
+
+            server_time = res.get("server_time", 0)
 
             self.token = next_token
-            print("   [心跳] OK")
+
+            print(f"   [心跳] OK | token={self.token} | server_time={server_time}")
+
             time.sleep(interval)
 
         self.running = False
