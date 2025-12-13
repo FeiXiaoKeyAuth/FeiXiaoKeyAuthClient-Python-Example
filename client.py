@@ -318,7 +318,8 @@ if __name__ == "__main__":
         v = client.get_var("test")
         print("   [远程变量] =", v)
 
-        client.start_keep_alive(10000)
+        # 心跳间隔建议设置为 30 秒以上，防止被Cloudflare拉黑。
+        client.start_keep_alive(30000)
 
         input("   按回车退出...\n")
         client.stop_keep_alive()
