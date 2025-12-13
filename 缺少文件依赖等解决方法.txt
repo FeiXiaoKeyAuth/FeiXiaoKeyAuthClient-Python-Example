@@ -1,0 +1,4 @@
+打开cmd窗口执行下面的命令安装依赖
+
+pip install requests
+pip install pycryptodome
