@@ -16,12 +16,11 @@ from Crypto.Random import get_random_bytes
 # ============================================================
 # 配置区域开始 请从作者后台 软件管理 操作按钮 那边获取相应配置 Py就是复制Python配置 C++就是复制C++配置
 # ============================================================
-
 # Python配置
-API_URL = "https://mdfackserver.feixiaokeyauth.top"
+API_URL = "https://feixiaokeyauth.top"
 AUTHOR_ID = 2
-SOFTWARE_ID = 4
-SECRET_KEY = "d6184a408d1564bbb65a1381994829a3" # Hex
+SOFTWARE_ID = 1
+SECRET_KEY = "c3a05165514d51d0ad86dc7ff4e05a44" # Hex
 VERSION = "1.0"
 
 # 安全配置
@@ -30,13 +29,13 @@ USE_SIGNATURE = True
 
 # RSA公钥
 PUBLIC_KEY_PEM = """-----BEGIN PUBLIC KEY-----
-MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA2nROnFwGhZdOMWA4zWMT
-b+T6WZIVfmR7VOHzZe8GRcf+CZqEPt1ZH1gXrDWiJ9d9aeCk99XTqSti3kiEqo1d
-WvUBmf0dwnruOlJusiyXOu/EWDFOkcvAAWePIRxxLQ92Y2Sh+TttKmYVvsz2/E6Q
-3SsffuxDvU07bZe9nfGb9BoplAjQmbhgQ8iLL47h1pGWJR3rutYtXkhFlheqQmkC
-1qRASIRcPZw5oLB5qNWdurwLrmt+LBo0xnUa/+7AcoxyXgGYUAF8wHZ4gqwaYMow
-jVa/pquDqi5dMKR2Pdno0VLno2r9747yinVzw5N7kP1KO1GRjvBgd3d5WZOMoFBg
-twIDAQAB
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAsqArxmtuGwDTPuGJd6MK
+5HCsk+08loR95uWJCe/mjHaIMtpjNHvE1WQyip9QZoInQONyH+N07I0N8t/vrgb4
+EuEQPbn3xRgbDdSBb/WTZ8vTAm1rr8UoDC2+bFNqehhqT3vSscGpbyCmBloNjdTH
+U5fwvR1p1UYejPiCbu/t3G6jIbaOX6lUcmKdNOQsB70ZIzmXWlCHIi5fdGEckMQr
+Eo1P+/2je+AY1eu/SDCe7iKclimCsyQJw1+q05ps+NjJE9XUZH5r4GzeVw8vY/yA
+ayoEY2rLFC8fD8e/eMF17oxn2ZMIaB8ZNI6peLaB5ckfO44ECSQzDoM72In+vuai
+QQIDAQAB
 -----END PUBLIC KEY-----"""
 
 
@@ -333,7 +332,7 @@ if __name__ == "__main__":
     key = input("   [验证] 请输入卡密：")
 
     if client.login(key):
-        v = client.get_var("test")
+        v = client.get_var("test233")
         print("   [远程变量] =", v)
 
         # 心跳间隔建议设置为 30 秒以上，防止被Cloudflare拉黑。
