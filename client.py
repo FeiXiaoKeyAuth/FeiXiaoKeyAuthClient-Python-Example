@@ -21,7 +21,7 @@ API_URL = "https://feixiaokeyauth.top"
 AUTHOR_ID = 2
 SOFTWARE_ID = 1
 SECRET_KEY = "c3a05165514d51d0ad86dc7ff4e05a44" # Hex
-VERSION = "1.0"
+VERSION = "1.1"
 
 # 安全配置
 CRYPTO_TYPE = "AES"
@@ -239,7 +239,7 @@ class KeyAuthClient:
         cloud_ver = res.get("latest_version", "")
 
         if not cloud_ver:
-            print("   [更新] 无法获取服务器版本号，跳过更新")
+            print("   [更新] 无法获取服务器版本号，跳过更新")#也可以获取不到就直接退出
         elif cloud_ver != VERSION:
             print("   [更新] 发现新版本！请更新客户端！")
             print(f"   [更新] 当前版本：{VERSION}  →  最新版本：{cloud_ver}")
@@ -263,6 +263,53 @@ class KeyAuthClient:
         res = self.send_request("/api/client/get_var", req)
         return res.get("var_value", "") if res else ""
 
+    # ------------------------------
+    # 获取软件公告/状态
+    # ------------------------------
+    def get_software(self):
+        print("   " + "-"*30 + "\n")#使用--------分割开
+        res = self.send_request("/api/client/get_announcement", {})
+        
+        if not res:
+            return False
+
+        # 软件开启维护状态
+        if res.get("maintenance", False):
+            print("   [状态] 服务器正在维护中，无法登录！")
+        
+        # 显示公告
+        announcement = res.get("announcement", "")
+        if announcement:
+            print(f"   [公告] {announcement}")
+            
+        # 版本检测
+        latest_ver = res.get("latest_version", "")
+        if latest_ver:
+            if latest_ver != VERSION and "download_url" in res:
+                print(f"   [更新] 发现新版本！请更新客户端！")
+                print(f"   [更新] 当前版本：{VERSION}  →  最新版本：{latest_ver}")
+                print(f"   [更新] 下载链接：{res['download_url']}")
+                 
+        print("   " + "-"*30 + "\n")#使用--------分割开
+        return res
+    
+    # ------------------------------
+    # 自助解绑
+    # ------------------------------
+    def unbind(self, license_key):
+        req = {
+            "license": license_key
+        }
+
+        res = self.send_request("/api/client/unbind", req)
+        
+        if not res:
+            return False
+
+        # 如果服务器返回了 success 或 message 字段
+        msg = res.get("message", "解绑指令已发送")
+        print(f"   [解绑] {msg}")
+        return True
 
     # ------------------------------
     # 心跳线程
@@ -329,16 +376,44 @@ class KeyAuthClient:
 if __name__ == "__main__":
     client = KeyAuthClient()
 
-    key = input("   [验证] 请输入卡密：")
+    # 获取软件公告
+    client.get_software()
 
-    if client.login(key):
-        v = client.get_var("test233")
-        print("   [远程变量] =", v)
+    # ------------------
+    # 登录
+    # ------------------
+    v = client.get_var("test233") # 获取无需登录的变量
+    print("   [远程变量(未登录)] =", v)
 
-        # 心跳间隔建议设置为 30 秒以上，防止被Cloudflare拉黑。
-        client.start_keep_alive(30000)
+    print("   [1] 登录验证")
+    print("   [2] 自助解绑")
+    print("   " + "-"*30)
+    
+    choice = input("   请选择功能: ")
 
+    if choice == "2":
+        # ------------------
+        # 解绑
+        # ------------------
+        key = input("   [解绑] 请输入要解绑的卡密：")
+        if client.unbind(key):
+            print("   [解绑] 操作成功")
+        else:
+            print("   [解绑] 解绑失败")
+        
         input("   按回车退出...\n")
-        client.stop_keep_alive()
+
     else:
-        print("   [验证] 登录失败")
+        key = input("   [验证] 请输入卡密：")
+
+        if client.login(key):
+            v = client.get_var("2333") # 获取需要登录的变量
+            print("   [远程变量] =", v)
+
+            # 心跳间隔建议设置为 30 秒以上，防止被Cloudflare拉黑。
+            client.start_keep_alive(30000)
+
+            input("   按回车退出...\n")
+            client.stop_keep_alive()
+        else:
+            print("   [验证] 登录失败")
